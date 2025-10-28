@@ -1,7 +1,8 @@
 FROM php:8.2-fpm-alpine
 
 # PHP uzantılarını ve gerekli paketleri kur
-RUN apk update && apk add --no-cache oniguruma-dev libpng-dev libzip-dev zip postgresql-dev libpq $PHPIZE_DEPS openssl-dev \
+RUN apk update && apk add --no-cache oniguruma-dev libpng-dev libzip-dev zip postgresql-dev $PHPIZE_DEPS openssl-dev \
+    brotli-dev zlib-dev gcc g++ make cyrus-sasl-dev \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip pdo_pgsql pgsql \
     && pecl install mongodb \
     && docker-php-ext-enable mongodb
