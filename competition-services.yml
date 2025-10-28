@@ -1,0 +1,51 @@
+  - script: artisan
+    args: app:competition-manipulator
+    name: competition-manipulator
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/competition-manipulator-err.log'
+    out_file: './storage/logs/competition-manipulator-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: app:competition-manager
+    name: competition-manager
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/competition-manager-err.log'
+    out_file: './storage/logs/competition-manager-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: app:competition-lottery-manager
+    name: competition-lottery-manager
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/competition-lottery-manager-err.log'
+    out_file: './storage/logs/competition-lottery-manager-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: queue:work --queue=lottery --sleep=3 --tries=1
+    name: lottery-queue-worker
+    exec_mode: fork
+    instances: 10
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/lottery-queue-worker-err.log'
+    out_file: './storage/logs/lottery-queue-worker-out.log'
+    merge_logs: true
+    time: true

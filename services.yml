@@ -1,0 +1,143 @@
+apps:
+  - script: artisan
+    args: octane:start --server=swoole --host=0.0.0.0 --port=8000
+    name: octane-http-server
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    watch: true
+    ignore_watch: ["node_modules", "storage", "docker", "vendor"]
+    watch_options:
+      "followSymlinks": false
+    max_memory_restart: '1G'
+    interpreter: php
+    error_file: './storage/logs/octane-http-server-err.log'
+    out_file: './storage/logs/octane-http-server-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: queue:work --queue=default --tries=1
+    name: default
+    namespace: default
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/default-err.log'
+    out_file: './storage/logs/default-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: app:listen-model-changes
+    name: model-changes-listener
+    namespace: logger
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/model-changes-listener-err.log'
+    out_file: './storage/logs/model-changes-listener-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: app:listen-traffic-request
+    name: traffic-log-listener
+    namespace: logger
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/listen-traffic-request-err.log'
+    out_file: './storage/logs/listen-traffic-request-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: queue:work --queue=maksipara-withdraw-queue --sleep=3 --tries=1
+    name: maksipara-withdraw
+    namespace: maksipara
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/maksipara-withdraw-err.log'
+    out_file: './storage/logs/maksipara-withdraw-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: app:competition-manipulator
+    name: competition-manipulator
+    namespace: competition
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/competition-manipulator-err.log'
+    out_file: './storage/logs/competition-manipulator-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: app:competition-manager
+    name: competition-manager
+    namespace: competition
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/acompetition-manager-err.log'
+    out_file: './storage/logs/acompetition-manager-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: app:competition-lottery-manager
+    name: competition-lottery-manager
+    namespace: competition
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/competition-lottery-manager-err.log'
+    out_file: './storage/logs/competition-lottery-manager-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: queue:work --queue=lottery --sleep=3 --tries=1
+    name: lottery
+    namespace: competition
+    exec_mode: fork
+    instances: 10
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/lottery-err.log'
+    out_file: './storage/logs/lottery-out.log'
+    merge_logs: true
+    time: true
+
+  - script: artisan
+    args: app:listen-method-traffic
+    name: method-traffic-listener
+    namespace: logger
+    exec_mode: fork
+    instances: 1
+    autorestart: true
+    max_memory_restart: '128M'
+    interpreter: php
+    error_file: './storage/logs/method-traffic-listener-err.log'
+    out_file: './storage/logs/method-traffic-listener-out.log'
+    merge_logs: true
+    time: true

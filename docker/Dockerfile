@@ -1,0 +1,49 @@
+FROM php:8.2-fpm-alpine
+
+# PHP uzantılarını ve gerekli paketleri kur
+RUN apk update && apk add --no-cache oniguruma-dev libpng-dev libzip-dev zip postgresql-dev libpq $PHPIZE_DEPS openssl-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip pdo_pgsql pgsql \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb
+
+# Swoole uzantısını kur
+RUN pecl install swoole \
+    && docker-php-ext-enable swoole
+
+# Redis uzantısını kur
+RUN pecl install redis && docker-php-ext-enable redis
+
+# Excimer uzantısını kur (sentry.io için)
+RUN pecl install excimer && docker-php-ext-enable excimer
+
+
+# PHP ini ayarlarını kopyala
+COPY docker/php.ini $PHP_INI_DIR/conf.d/custom.ini
+
+# Composer kurulumu
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# PM2 kurulumu
+RUN apk add --update npm && \
+    npm install pm2 -g
+
+WORKDIR /var/www
+
+# Laravel projenizi kopyalayın
+COPY . /var/www
+
+# Bağımlılıkları kur
+# RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+# PM2 ile Laravel Octane çalıştırma komutu
+CMD ["sh", "-c", "while true; do date; sleep 1; done"]
+
+#CMD if [ ! -d "/var/www/vendor" ]; then \
+#       while true; do \
+#            echo "WARNING: 'vendor' not found.Please run 'composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader'."; \
+#            sleep 5; \
+#        done; \
+#    else \
+#        pm2-runtime services.yml; \
+#    fi
+

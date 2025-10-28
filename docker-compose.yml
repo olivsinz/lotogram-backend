@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+    new_project_api:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        container_name: new_project_api
+        volumes:
+            - .:/var/www
+            - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
+        ports:
+            - "8004:8000"
+        depends_on:
+            - pgsql
+            - mongodb
+            - redis
+
+    pgsql:
+        image: postgres:latest
+        container_name: apollo_pgsql
+        environment:
+            - POSTGRES_DB=apollo
+            - POSTGRES_USER=apollo
+            - POSTGRES_PASSWORD=secret
+        ports:
+            - "5433:5432"
+        volumes:
+            - pgsql-data:/var/lib/postgresql/data
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U apollo" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    mongodb:
+        image: mongo:latest
+        container_name: apollo_mongodb
+        ports:
+            - "27018:27017"
+        volumes:
+            - mongo-data:/data/db
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "mongo",
+                    "--eval",
+                    "'db.runCommand(\"ping\").ok'"
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    redis:
+        image: redis:latest
+        container_name: apollo_redis
+        ports:
+            - "6380:6379"
+        volumes:
+            - redis-data:/data
+        healthcheck:
+            test: [ "CMD", "redis-cli", "ping" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    mysql:
+        image: mysql:latest
+        container_name: apollo_mysql
+        environment:
+            - MYSQL_DATABASE=apollo_pulse
+            - MYSQL_USER=apollo
+            - MYSQL_PASSWORD=secret
+            - MYSQL_ROOT_PASSWORD=rootsecret
+        ports:
+            - "3307:3306"
+        volumes:
+            - mysql-data:/var/lib/mysql
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+volumes:
+    pgsql-data:
+    mongo-data:
+    redis-data:
+    mysql-data:
