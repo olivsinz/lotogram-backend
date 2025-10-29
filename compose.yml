@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
-    new_project_api:
+    laravel.test:
         build:
             context: .
             dockerfile: docker/Dockerfile
-        container_name: new_project_api
+        container_name: laravel.test
         volumes:
             - .:/var/www
             - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -17,7 +15,7 @@ services:
             - redis
 
     pgsql:
-        image: postgres:latest
+        image: postgres:17
         container_name: apollo_pgsql
         environment:
             - POSTGRES_DB=apollo
