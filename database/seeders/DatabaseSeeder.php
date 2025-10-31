@@ -16,7 +16,9 @@ class DatabaseSeeder extends Seeder
             MethodSeeder::class,
             PlannedCompetitionSeeder::class,
             PlannedCompetitionRewardSeeder::class,
-            BotSeeder::class
+            BotSeeder::class,
+            CompetitionSeeder::class,
+            CompetitionTicketSeeder::class,
         ]);
 
         if (config('app.env') == 'local' || config('app.env') == 'test')

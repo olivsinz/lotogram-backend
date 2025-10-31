@@ -3,12 +3,16 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
         container_name: laravel.test
+        ports:
+            - "8004:8000"
+        environment:
+            WWWUSER: '${WWWUSER}'
         volumes:
             - .:/var/www
             - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
-        ports:
-            - "8004:8000"
         depends_on:
             - pgsql
             - mongodb
