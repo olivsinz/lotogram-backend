@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class   Competition extends Model
+class Competition extends Model
 {
     use HasFactory, HasUuid;
 
@@ -87,8 +87,4 @@ class   Competition extends Model
         $status !== null
             && $query->where('status', $status);
     }
-
-
-
-
 }

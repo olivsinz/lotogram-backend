@@ -1,0 +1,30 @@
+// https://aka.ms/devcontainer.json
+{
+    "name": "Lotogram API",
+    "dockerComposeFile": ["../compose.yaml"],
+    "service": "laravel.test",
+    "workspaceFolder": "/var/www/html",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "Vue.volar",
+                "bradlc.vscode-tailwindcss",
+                "esbenp.prettier-vscode",
+                "bmewburn.vscode-intelephense-client",
+                "jaguadoromero.vscode-php-create-class",
+                "DEVSENSE.phptools-vscode",
+                "laravel.vscode-laravel",
+                "dbaeumer.vscode-eslint",
+                "WakaTime.vscode-wakatime",
+                "Gruntfuggly.todo-tree",
+                "byi8220.indented-block-highlighting"
+            ],
+            "settings": {}
+        }
+    },
+    "remoteUser": "sail",
+    "postCreateCommand": "chown -R 1000:1000 /var/www/html 2>/dev/null || true"
+    // "forwardPorts": [],
+    // "runServices": [],
+    // "shutdownAction": "none",
+}
